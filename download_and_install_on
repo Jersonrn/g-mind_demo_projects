@@ -1,0 +1,70 @@
+#!/usr/bin/python3
+
+import sys
+import subprocess
+import os
+
+LATEST = "v1.0.0-beta.1"
+
+def show_help():
+    help_text = """
+    USAGE:
+    --------------------------------------------------
+    Just for download:
+    ./download_and_install_on version
+    --------------------------------------------------
+    For download and install:
+    ./download_and_install_on version path/to/install
+    --------------------------------------------------
+    """
+    print(help_text)
+
+def download_file(link):
+    print(f"Downloading version {link}...\n")
+    result = subprocess.run(["wget", link], capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error downloading the file:")
+        print(result.stderr)
+        sys.exit(1)
+
+def extract_file(to):
+    print(f"Installing lib_g-mind to {to}...")
+    result = subprocess.run(["tar", "-xvf", "lib_g-mind.tar", "-C", to], capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error installing the file:")
+        print(result.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Error: No version specified.")
+        show_help()
+        sys.exit(1)
+
+    if sys.argv[1] in ("h", "help"):
+        show_help()
+        sys.exit()
+
+    version = sys.argv[1]
+    if version == "latest":
+        version = LATEST
+
+    link = f"https://github.com/Jersonrn/G-Mind/releases/download/{version}/lib_g-mind.tar"
+
+    # Check if the file already exists and remove it if it does
+    if os.path.exists("lib_g-mind.tar"):
+        print("lib_g-mind.tar already exists. Removing it...")
+        os.remove("lib_g-mind.tar")
+
+    # Download the file
+    download_file(link)
+
+    # Check if a path is provided for installation
+    if len(sys.argv) > 2:
+        to = sys.argv[2]
+        if not os.path.isdir(to):
+            print(f"Error: The directory '{to}' does not exist.")
+            sys.exit(1)
+        extract_file(to)
+    else:
+        print("No installation path provided. The file has been downloaded but not installed.")
