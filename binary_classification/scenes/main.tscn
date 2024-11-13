@@ -1,13 +1,13 @@
 [gd_scene load_steps=17 format=3 uid="uid://cckrkc8pyekhi"]
 
-[ext_resource type="Script" path="res://demos/binary_classification/scripts/main.gd" id="1_1r405"]
-[ext_resource type="PackedScene" uid="uid://n86yuiyp0ib4" path="res://demos/binary_classification/scenes/blue.tscn" id="1_my466"]
-[ext_resource type="PackedScene" uid="uid://qulww01g5ha7" path="res://demos/binary_classification/scenes/red.tscn" id="2_tbacb"]
-[ext_resource type="Texture2D" uid="uid://b4ogk4g5gle1g" path="res://demos/binary_classification/images/void_circle.png" id="4_b5t3a"]
-[ext_resource type="FontFile" uid="uid://cobis3ib7xbh7" path="res://demos/Celsius2Fahrenheit/fonts/JetBrainsMonoNerdFont-Bold.ttf" id="4_d61um"]
-[ext_resource type="Script" path="res://scripts/plotter.gd" id="5_i4yjw"]
-[ext_resource type="Texture2D" uid="uid://dfkgd84f7hoow" path="res://demos/binary_classification/images/red.png" id="5_koeuy"]
-[ext_resource type="Texture2D" uid="uid://drmhp47c7r7fo" path="res://demos/binary_classification/images/blue.png" id="6_84qse"]
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_1r405"]
+[ext_resource type="PackedScene" uid="uid://n86yuiyp0ib4" path="res://scenes/blue.tscn" id="1_my466"]
+[ext_resource type="PackedScene" uid="uid://qulww01g5ha7" path="res://scenes/red.tscn" id="2_tbacb"]
+[ext_resource type="Texture2D" uid="uid://b4ogk4g5gle1g" path="res://images/void_circle.png" id="4_b5t3a"]
+[ext_resource type="FontFile" uid="uid://cobis3ib7xbh7" path="res://fonts/JetBrainsMonoNerdFont-Bold.ttf" id="4_d61um"]
+[ext_resource type="Script" path="res://lib/g_mind/scripts/plotter.gd" id="5_i4yjw"]
+[ext_resource type="Texture2D" uid="uid://dfkgd84f7hoow" path="res://images/red.png" id="5_koeuy"]
+[ext_resource type="Texture2D" uid="uid://drmhp47c7r7fo" path="res://images/blue.png" id="6_84qse"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_icfmq"]
 device = -1
@@ -94,11 +94,10 @@ layout_mode = 2
 [node name="class_selector" type="OptionButton" parent="left_panel"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_1rikc")
-item_count = 2
 selected = 0
+item_count = 2
 popup/item_0/text = "RED"
 popup/item_0/icon = ExtResource("5_koeuy")
-popup/item_0/id = 0
 popup/item_1/text = "BLUE"
 popup/item_1/icon = ExtResource("6_84qse")
 popup/item_1/id = 1
