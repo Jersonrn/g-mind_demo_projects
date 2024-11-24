@@ -1,8 +1,8 @@
 extends Node
 
 
-var xx = [-40., -20.,  0., 20., 40.,  60.,  80.]#Celsius
-var yy = [-40.,  -4., 32., 68., 104., 140., 176.]#Fahrenheit
+var xx = Tensor.new([-40., -20.,  0., 20.,  40.,  60.,  80.])#Celsius
+var yy = Tensor.new([-40.,  -4., 32., 68., 104., 140., 176.])#Fahrenheit
 
 var seed = hash("G-Mind")
 
@@ -13,17 +13,25 @@ var Net = Sequential.new([
 
 var mse_loss = MSELoss.new()
 
+var c_scaler = MinMaxScaler.new()
+var f_scaler = MinMaxScaler.new()
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	xx = [-0.4, -0.2,  0.,   0.2,  0.4,  0.6,  0.8]
-	yy = [-0.4,  -0.04,  0.32,  0.68,  1.04,  1.4,   1.76]
+	self.c_scaler.fit(xx)
+	self.f_scaler.fit(yy)
+	xx = self.c_scaler.transform(xx)
+	yy = self.f_scaler.transform(yy)
 
-	# xx = self.normalize(xx)
-	# yy = self.normalize(yy)
+	print("---------------------------------")
 	print(xx)
 	print(yy)
 	print("---------------------------------")
+
+	# xx = self.c_scaler.inverse_transform(xx)
+	# yy = self.f_scaler.inverse_transform(yy)
+
 
 func train():
 	var epochs = 1000.
@@ -35,9 +43,9 @@ func train():
 	for epoch in range(epochs):
 		var epoch_loss = 0.
 
-		for i in range(len(xx)):
-			var x: Tensor = Tensor.new([ xx[i] ])
-			var y: Tensor = Tensor.new([ yy[i] ])
+		for i in range(len(xx.values)):
+			var x = Tensor.new([ xx.values[i] ])
+			var y = Tensor.new([ yy.values[i] ])
 
 			var y_hat = Net.forward(x)
 
@@ -54,7 +62,7 @@ func train():
 
 
 		if (epoch + 1) % 10 == 0:
-			print("Epoch [", epoch + 1., "] Loss: ", epoch_loss / len(xx))
+			print("Epoch [", epoch + 1., "] Loss: ", epoch_loss / len(xx.values))
 	
 
 func do_pred():
@@ -71,25 +79,16 @@ func do_pred():
 func _process(delta):
 	pass
 
-func normalize(data: Array) -> Array:
-	var outputs: Array = []
-
-	for d in data:
-		outputs.append(d/100)
-
-	return outputs
-
 
 func _on_celsius_input_text_changed():
 	var celsius = $calculator_container/celsius_container/celsius_input.text
-	celsius = float(celsius)/100.
 	
-	var x = Tensor.new([ float(celsius) ])#Celsius
+	var x: Tensor = c_scaler.transform(Tensor.new([float(celsius)]))
 
 	var pred: Tensor = Net.forward(x)
-	var y = pred.values[0] * 100.
+	var y = f_scaler.inverse_transform(pred)
 	
-	$calculator_container/fahrenheit_container/n_fahrenheit.text = str(y)
+	$calculator_container/fahrenheit_container/n_fahrenheit.text = str(y.values[0])
 
 
 func _on_train_pressed():
